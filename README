@@ -1,0 +1,44 @@
+Modified Prisoner's Dilemma lab.
+
+Sparked by
+http://lesswrong.com/lw/7f2/prisoners_dilemma_tournament_results/4ru9
+
+A match brings together two programs written in a custom dialect of
+Scheme. Each is called with two inputs: the source code of itself and
+the other. (Giving it its own source code is only a convenience, of
+course.) It's allowed to run for some standard number of steps
+('fuel'). The output should be 'C or 'D within the allotted time. If
+not, both programs earn 0. Otherwise, standard prisoner's-dilemma
+payoffs.
+
+In a round-robin tournament, agents get ranked by total score over all
+matches.
+
+Implementation in Gambit Scheme using its WITH-EXCEPTION-CATCHER 
+primitive; I believe it's portable Scheme otherwise.
+
+;; Example agent: cooperate with shallow, cooperative agents (first cut)
+(lambda (me them)
+  (let ((result (run 1000
+                     (list them them me)
+                     (cons (list 'run run) ;TODO: interpose a new RUN
+                           (global-environment)))))
+    (let ((remaining (car result))
+          (value (cadr result)))
+      (if (< 500 remaining)
+          (if (equal? value 'C)
+              'C
+              'D)
+          'D))))
+
+;; Trivial cooperator and defector
+(lambda (me them) 'C)
+(lambda (me them) 'D)
+
+;; Buggy
+(lambda (me them) (car))
+
+;; Too deep
+(lambda (me them)
+  ((lambda (f) (f f))
+   (lambda (f) (f f))))
