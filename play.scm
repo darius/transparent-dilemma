@@ -56,5 +56,5 @@
         (let ((player (car players))
               (others (cdr players)))
           (cons (map (lambda (other) (list player other (play player other)))
-                     others)
+                     players)
                 (outer others))))))
