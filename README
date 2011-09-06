@@ -17,6 +17,19 @@ matches.
 Implementation in Gambit Scheme using its WITH-EXCEPTION-CATCHER 
 primitive; I believe it's portable Scheme otherwise.
 
+(RUN fuel expression environment) is like the standard EVAL but with
+limited fuel, and returning a list like (unconsumed-fuel result-value).
+The result in the case of an error or fuel exhaustion is defined in
+terp.scm -- I may want to change all these particulars.
+
+To implement Eliezer's 
+
+> This enables you to say, "Simulate my opponent, and if it tries to
+> simulate me, see what it will do if it simulates me outputting
+> Cooperate."
+
+rebind RUN to your preferred function in the environment passed to RUN.
+
 ;; Example agent: cooperate with shallow, cooperative agents (first cut)
 (lambda (me them)
   (let ((result (run 1000
