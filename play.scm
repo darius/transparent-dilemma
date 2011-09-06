@@ -37,8 +37,8 @@
   '(lambda (me them)
      (let ((result (run 1000
                         (list them them me)
-                        (cons (list 'run run) ;TODO: interpose a new RUN
-                              (global-environment)))))
+                        (rebind 'run run  ;TODO: interpose a new RUN
+                                (global-environment)))))
        (let ((remaining (car result))
              (value (cadr result)))
          (if (< 500 remaining)

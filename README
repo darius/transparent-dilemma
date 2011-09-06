@@ -18,9 +18,11 @@ Implementation in Gambit Scheme using its WITH-EXCEPTION-CATCHER
 primitive; I believe it's portable Scheme otherwise.
 
 (RUN fuel expression environment) is like the standard EVAL but with
-limited fuel, and returning a list like (unconsumed-fuel result-value).
-The result in the case of an error or fuel exhaustion is defined in
-terp.scm -- I may want to change all these particulars.
+limited fuel, and returning a list like (unconsumed-fuel
+result-value). In the scope of this run, (GLOBAL-ENVIRONMENT) returns
+the environment passed in. The result in the case of an error or fuel
+exhaustion is defined in terp.scm -- I may want to change all these
+particulars.
 
 To implement Eliezer's 
 
@@ -29,13 +31,20 @@ To implement Eliezer's
 > Cooperate."
 
 rebind RUN to your preferred function in the environment passed to RUN.
+(For convenience a REBIND function is supplied.)
 
-;; Example agent: cooperate with shallow, cooperative agents (first cut)
+;; Example agents
+
+;; Trivial cooperator and defector
+(lambda (me them) 'C)
+(lambda (me them) 'D)
+
+;; Cooperate with shallow, cooperative agents (first cut)
 (lambda (me them)
   (let ((result (run 1000
                      (list them them me)
-                     (cons (list 'run run) ;TODO: interpose a new RUN
-                           (global-environment)))))
+                     (rebind 'run run  ;TODO: interpose a new RUN
+                             (global-environment)))))
     (let ((remaining (car result))
           (value (cadr result)))
       (if (< 500 remaining)
@@ -43,15 +52,3 @@ rebind RUN to your preferred function in the environment passed to RUN.
               'C
               'D)
           'D))))
-
-;; Trivial cooperator and defector
-(lambda (me them) 'C)
-(lambda (me them) 'D)
-
-;; Buggy
-(lambda (me them) (car))
-
-;; Too deep
-(lambda (me them)
-  ((lambda (f) (f f))
-   (lambda (f) (f f))))

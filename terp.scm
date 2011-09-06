@@ -68,6 +68,17 @@
   (lambda (fuel args k)
     (k fuel (apply procedure args))))
 
+(define (rebind var val env)
+  (cons (list var val)
+        (a-list-remove var env)))
+
+(define (a-list-remove key pairs)
+  (cond ((null? pairs) '())
+        ((eq? key (caar pairs))
+         (a-list-remove key (cdr pairs)))
+        (else (cons (car pairs)
+                    (a-list-remove key (cdr pairs))))))
+
 (define global-environment
   `((list   ,(primitive list))
     (cons   ,(primitive cons))
@@ -77,13 +88,17 @@
     (<      ,(primitive <))
     (equal? ,(primitive equal?))
     (expand ,(primitive expand))
+    (rebind ,(primitive rebind))
     (global-environment ,(primitive (lambda () global-environment)))
     (run    ,(lambda (fuel args k)
                (let ((requested-fuel (car args))
                      (expr (cadr args))
                      (env (caddr args)))
                  (let ((subfuel (min fuel requested-fuel)))
-                   (let ((result (run subfuel expr env)))
+                   (let ((result (run subfuel expr 
+                                      (rebind 'global-environment
+                                              (primitive (lambda () env))
+                                              env))))
                      (let ((remaining (car result))
                            (value (cadr result)))
                        (let ((consumed (- requested-fuel remaining)))
