@@ -2,6 +2,9 @@ Modified Prisoner's Dilemma lab.
 
 Sparked by
 http://lesswrong.com/lw/7f2/prisoners_dilemma_tournament_results/4ru9
+(See also the refs at
+http://lesswrong.com/lw/duv/ai_cooperation_is_already_studied_in_academia_as/
+)
 
 A match brings together two programs written in a custom dialect of
 Scheme. Each is called with two inputs: the source code of itself and
