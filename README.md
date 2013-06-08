@@ -94,7 +94,7 @@ Standard primitive procedures
 
 * `cons`
 * `car`
-* 'cdr`
+* `cdr`
 * `cadr`
 * `<`
 * `equal?`
