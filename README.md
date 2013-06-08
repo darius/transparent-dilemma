@@ -1,4 +1,5 @@
 Modified Prisoner's Dilemma lab.
+===============================
 
 Sparked by
 http://lesswrong.com/lw/7f2/prisoners_dilemma_tournament_results/4ru9
@@ -36,22 +37,79 @@ To implement Eliezer's
 rebind RUN to your preferred function in the environment passed to RUN.
 (For convenience a REBIND function is supplied.)
 
-;; Example agents
+    ;; Example agents
 
-;; Trivial cooperator and defector
-(lambda (me them) 'C)
-(lambda (me them) 'D)
+    ;; Trivial cooperator and defector
+    (lambda (me them) 'C)
+    (lambda (me them) 'D)
 
-;; Cooperate with shallow, cooperative agents (first cut)
-(lambda (me them)
-  (let ((result (run 1000
-                     (list them them me)
-                     (rebind 'run run  ;TODO: interpose a new RUN
-                             (global-environment)))))
-    (let ((remaining (car result))
-          (value (cadr result)))
-      (if (< 500 remaining)
-          (if (equal? value 'C)
-              'C
-              'D)
-          'D))))
+    ;; Cooperate with shallow, cooperative agents (first cut)
+    (lambda (me them)
+      (let ((result (run 1000
+                         (list them them me)
+                         (rebind 'run run  ;TODO: interpose a new RUN
+                                 (global-environment)))))
+        (let ((remaining (car result))
+              (value (cadr result)))
+          (if (< 500 remaining)
+              (if (equal? value 'C)
+                  'C
+                  'D)
+              'D))))
+
+Language reference
+==================
+
+Besides `run` it's a subset of standard Scheme: (TODO add explanations)
+
+Core forms
+==========
+
+* Variable reference
+
+* Constant (TODO always expand these out to quotes)
+
+* `(quote datum)`
+
+* `(if exp exp exp)`
+
+* `(lambda (variable ...) exp)`
+
+* `(exp exp ...)`
+
+TODO probably nicest overall to include `letrec` too
+
+Datatypes
+=========
+
+* boolean
+* symbol
+* IEEE double
+* empty list
+* pair
+* procedure
+
+Standard primitive procedures
+====================
+
+* `cons`
+* `car`
+* 'cdr`
+* `cadr`
+* `<`
+* `equal?`
+
+New primitive procedures
+====================
+
+* `expand`: expand out derived forms, reducing to core forms
+* `rebind`
+* `global-environment`
+* `run`
+
+Derived forms
+==========
+
+* `(let ((variable exp) ...) exp)`
+
+TODO add the usual macros
